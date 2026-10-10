@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Decryption - Image Steganography Project</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    {% include "navbar.html" %}
+    <div class="container mt-5">
+        <h1 class="text-center">Decrypt Text from Image</h1>
+
+        <form class="mt-4" action="{% url 'decryption' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="image" class="form-label">Encrypted Image:</label>
+                <input type="file" name="image" id="image" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Decrypt</button>
+        </form>
+
+        {% if error %}
+            <div class="alert alert-danger mt-3">
+                <strong>Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        {% if text %}
+            <div class="alert alert-success mt-3">
+                <h4 class="mb-2">Decrypted Text:</h4>
+                <p>{{ text }}</p>
+                {% if debug_info %}
+                    <hr>
+                    <p class="mb-0"><small>Debug (raw): {{ debug_info }}</small></p>
+                {% endif %}
+            </div>
+        {% elif not error and request.method == "POST" %}
+            <div class="alert alert-warning mt-3">
+                <p>No text was extracted from the image.</p>
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
